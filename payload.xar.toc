@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xar>
+ <toc>
+  <creation-time>2011-03-27T13:14:35</creation-time>
+  <checksum style="sha1">
+   <offset>0</offset>
+   <size>20</size>
+  </checksum>
+  <signature-creation-time>322924475</signature-creation-time>
+  <signature style="RSA">
+   <offset>20</offset>
+   <size>256</size>
+   <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <X509Data>
+     <X509Certificate>MIIGwzCCBaugAwIBAgICAQQwDQYJKoZIhvcNAQEFBQAwgYwxCzAJBgNVBAYTAklMMRYwFAYD
+VQQKEw1TdGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0
+ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAyIFByaW1hcnkgSW50ZXJtZWRp
+YXRlIE9iamVjdCBDQTAeFw0xMDAzMjkxMzQ1NTRaFw0xMjAzMjkwNjU5MjRaMIHAMSAwHgYD
+VQQNExcxNzE2ODUtTW5kd25kdjlRYzIwVHNtaTELMAkGA1UEBhMCREsxEzARBgNVBAgTClN5
+ZGRhbm1hcmsxEjAQBgNVBAcTCUVzYmplcmcgTzEtMCsGA1UECxMkU3RhcnRDb20gVmVyaWZp
+ZWQgQ2VydGlmaWNhdGUgTWVtYmVyMRYwFAYDVQQDEw1NaWtrZWwgS3JhdXR6MR8wHQYJKoZI
+hvcNAQkBFhBtaWtrZWxAa3JhdXR6LmRrMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAsZnxq2PfwCKuUlnttCUPHcPfpRF32wY7xq0yc1auMzFrxvie3UUc/03XBR0WdEGsotSm
+RWlj2dT5VtgJoNLFAph03VjIAZD7qkjZaoJ1/20giFNLEqS5vCKJSEpZLN3yUs/Hzr2wHKQv
+ofNEZ+w/4UDFdzTnP5dC392HzwlYQiV9EJX+VZIugFLlN38GgrgfCFQbDMZEEbEFWjasqYeG
+LPTR/Gr5ycTDAXBt4DYM/Q0TI8u5yxgMs1ZFNzVumaT6tOSTXf/cbUM3Fa5FGdVg2mPvkvka
+obuRa/Tmsxzd/ZPe0xoJiv0pKdSUv6IVrSVXMG5mXCuGsff6+LiyH5Y+jQIDAQABo4IC9zCC
+AvMwCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCB4AwOgYDVR0lAQH/BDAwLgYIKwYBBQUHAwMG
+CisGAQQBgjcCARUGCisGAQQBgjcCARYGCisGAQQBgjcKAw0wHQYDVR0OBBYEFE/AOkd07RaW
+NExzxYtvYnJsRVUfMB8GA1UdIwQYMBaAFNBOD0CZbLhLGW87KLjg44gHNKq3MIIBQgYDVR0g
+BIIBOTCCATUwggExBgsrBgEEAYG1NwECATCCASAwLgYIKwYBBQUHAgEWImh0dHA6Ly93d3cu
+c3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cuc3RhcnRz
+c2wuY29tL2ludGVybWVkaWF0ZS5wZGYwgbcGCCsGAQUFBwICMIGqMBQWDVN0YXJ0Q29tIEx0
+ZC4wAwIBARqBkUxpbWl0ZWQgTGlhYmlsaXR5LCBzZWUgc2VjdGlvbiAqTGVnYWwgTGltaXRh
+dGlvbnMqIG9mIHRoZSBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSBQb2xpY3kg
+YXZhaWxhYmxlIGF0IGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwYwYDVR0f
+BFwwWjAroCmgJ4YlaHR0cDovL3d3dy5zdGFydHNzbC5jb20vY3J0YzItY3JsLmNybDAroCmg
+J4YlaHR0cDovL2NybC5zdGFydHNzbC5jb20vY3J0YzItY3JsLmNybDCBiQYIKwYBBQUHAQEE
+fTB7MDcGCCsGAQUFBzABhitodHRwOi8vb2NzcC5zdGFydHNzbC5jb20vc3ViL2NsYXNzMi9j
+b2RlL2NhMEAGCCsGAQUFBzAChjRodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS9jZXJ0cy9zdWIu
+Y2xhc3MyLmNvZGUuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3RhcnRzc2wuY29t
+LzANBgkqhkiG9w0BAQUFAAOCAQEALNTEozYMsIsifvTsi9JWAtVm6C5iBx2hI+TyODqBgDsX
+cph62LMit07e7a+mAFY8cg3oWreuFFpB2H2FJGO6rC9Uv1WNyHDfMkOW7f8/qr4FT0b3Myaq
+c+5KALURbHznVJJbuFnVfkNB3tq6cwXv3n24diY8tvjAqchla2DX/YFpX5g3dV3CQZzcbBO2
+Nyn6jcAGxzbFPAa4Aye2UX73HxTEsWQPju/m3pP4Xxe6cfvDoUd/s43D/RqZ/1vmgnqqVnGP
+RXvGdeVNyHnFC7EOSW4ZqQob7F3UarRsjLyo8dOPi3SvhJ6HyT0YFiqIdsfbN+Tz/knuyqfA
+M1m/aAkFvw==</X509Certificate>
+     <X509Certificate>MIIGcDCCBFigAwIBAgIBJDANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQGEwJJTDEWMBQGA1UE
+ChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUg
+U2lnbmluZzEpMCcGA1UEAxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcN
+MDcxMDI0MjIwMTQ2WhcNMTcxMDI0MjIwMTQ2WjCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
+DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
+Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDIgUHJpbWFyeSBJbnRlcm1lZGlhdGUg
+T2JqZWN0IENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyiOLIjUemqAbPJ1J
+0D8MlzgWKbr4fYlbRVjvhHDtfhFN6RQxq0PjTQxRgWzwFQNKJCdU5ftKoM5N4YSjId6ZNavc
+Sa6/McVnhDAQm+8H3HWoD030NVOxbjgD/Ih3HaV3/z9159nnvyxQEckRZfpJB2Kfk6aHqW3J
+nSvRe+XVZSufDVCe/vtxGSEwKCaNrsLc9pboUoYIC3oyzWoUTZ65+c0H4paR8c8eK/mC914m
+Bo6N0dQ512/bkSdaeY9YaQpGtW/h/W/FkbQRT3sCpttLVlIjnkuY4r9+zvqhToPjxcfDYEf+
+XD8VGkAqle8Aa8hQ+M1qGdQjAye8OzbVuUOw7wIDAQABo4IB6TCCAeUwDwYDVR0TAQH/BAUw
+AwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFNBOD0CZbLhLGW87KLjg44gHNKq3MB8G
+A1UdIwQYMBaAFE4L7xqkQFulF2mHMMo0aEPQQa7yMD0GCCsGAQUFBwEBBDEwLzAtBggrBgEF
+BQcwAoYhaHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6Al
+oCOGIWh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2Ny
+bC5zdGFydHNzbC5jb20vc2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYw
+LgYIKwYBBQUHAgEWImh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYB
+BQUHAgEWKGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwEQYJYIZI
+AYb4QgEBBAQDAgABMFAGCWCGSAGG+EIBDQRDFkFTdGFydENvbSBDbGFzcyAyIFByaW1hcnkg
+SW50ZXJtZWRpYXRlIE9iamVjdCBTaWduaW5nIENlcnRpZmljYXRlczANBgkqhkiG9w0BAQUF
+AAOCAgEAcnMLA3VaN4OIE9l4QT5OEtZy5PByBit3oHiqQpgVEQo7DHRsjXD5H/IyTivpMika
+aeRxIv95baRd4hoUcMwDj4JIjC3WA9FoNFV31SMljEZa66G8RQECdMSSufgfDYu1XQ+cUKxh
+D3EtLGGcFGjjML7EQv2Iol741rEsycXwIXcryxeiMbU2TPi7X3elbwQMc4JFlJ4By9FhBzuZ
+B1DV2sN2irGVbC3G/1+S2doPDjL1CaElwRa/T0qkq2vvPxUgryAoCppUFKViw5yoGYC+z1Ga
+esWWiP1eFKAL0wI7IgSvLzU3y1Vp7vsYaxOVBqZtebFTWRHtXjCsFrrQBngt0d33QbQRI5mw
+gzEp7XJ9xu5d6RVWM4TPRUsd+DDZpBHm9mszvi9gVFb2ZG7qRRXCSqys4+u/NLBPbXi/m/lU
+00cODQTlC/euwjk9HQtRrXQ/zqsBJS6UJ+eLGw1qOfj+HVBl/ZQpfoLk7IoWlRQvRL1s7oir
+EaqPZUIWY/grXq9r6jDKAp3LZdKQpPOnnogtqlU4f7/kLjEJhrrc98mrOWmVMK/BuFRAfQ5o
+DUMnVmCzAzLMjKfGcVW/iMew41yfhgKbwpfzm3LBr1Zv+pEBgcgW6onRLSAn3XHM0eNtz+Ak
+xH6rRf6B2mYhLEEGLapH8R1AMAo4BbVFOZR5kXcMCwo=</X509Certificate>
+     <X509Certificate>MIIHyTCCBbGgAwIBAgIBATANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQGEwJJTDEWMBQGA1UE
+ChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUg
+U2lnbmluZzEpMCcGA1UEAxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcN
+MDYwOTE3MTk0NjM2WhcNMzYwOTE3MTk0NjM2WjB9MQswCQYDVQQGEwJJTDEWMBQGA1UEChMN
+U3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2ln
+bmluZzEpMCcGA1UEAxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwggIiMA0G
+CSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDBiNsJvGxGfHiflXu1M5DycmLWwTYgIiRezul3
+8kMKogZkpMyONvg45iPwbm2xPN1yo4UcodM9tDMr0y+v/uqwQVlntsQGfQqedIXWeUyAN3rf
+OQVSWff0G0ZDpNKFhdLDcfN1YjS6LIp/Ho/u7TTQEceWzVI9ujPW3U3eCztKS5/CJi/6tRYc
+cjV3yjxd5srhJosaNnZcAdt0FCX+7bWgiA/deMotHweXMAEtcnn6RtYTKqi5pquDSR3l8u/d
+5AGOGAqPY1MWhWKpDhk6zLVmpsJrdAfkK+F2PrRt2PZE4XNiHzvEvqBTViVsUQn3qqvKv3b9
+bZvzndu/PWa8DFaqr5hIlTpL36dYUNk4dalb6kMMAv+Z6+hsTXBbKWWc3apdzK8BMewM69KN
+6Oqce+Zu9ydmDBpI125C4z/eIT574Q1w+2OqqGwaVLRcJXrJosmLFqa7LH4XXgVNWG4SHQHu
+EhANxjJ/GP/89PrNbpHoNkm+Gkhpi8KWTRoSsmkXwQqQ1vp5Iki/untp+HDH+no32NgN0nZP
+V/+Qt+OR0t3vwmC3Zzrd/qqc8NSLf3Iizsafl7b4r4qgEKjZ+xjGtrVcUjyJthkqcwEKDwOz
+EmDyei+B26Nu/yYwl/WL3YlXtq09s68rxbd2AvCl1iuahhQqcvbjM4xdCUsT37uMdBNSSwID
+AQABo4ICUjCCAk4wDAYDVR0TBAUwAwEB/zALBgNVHQ8EBAMCAa4wHQYDVR0OBBYEFE4L7xqk
+QFulF2mHMMo0aEPQQa7yMGQGA1UdHwRdMFswLKAqoCiGJmh0dHA6Ly9jZXJ0LnN0YXJ0Y29t
+Lm9yZy9zZnNjYS1jcmwuY3JsMCugKaAnhiVodHRwOi8vY3JsLnN0YXJ0Y29tLm9yZy9zZnNj
+YS1jcmwuY3JsMIIBXQYDVR0gBIIBVDCCAVAwggFMBgsrBgEEAYG1NwEBATCCATswLwYIKwYB
+BQUHAgEWI2h0dHA6Ly9jZXJ0LnN0YXJ0Y29tLm9yZy9wb2xpY3kucGRmMDUGCCsGAQUFBwIB
+FilodHRwOi8vY2VydC5zdGFydGNvbS5vcmcvaW50ZXJtZWRpYXRlLnBkZjCB0AYIKwYBBQUH
+AgIwgcMwJxYgU3RhcnQgQ29tbWVyY2lhbCAoU3RhcnRDb20pIEx0ZC4wAwIBARqBl0xpbWl0
+ZWQgTGlhYmlsaXR5LCByZWFkIHRoZSBzZWN0aW9uICpMZWdhbCBMaW1pdGF0aW9ucyogb2Yg
+dGhlIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5IFBvbGljeSBhdmFpbGFibGUg
+YXQgaHR0cDovL2NlcnQuc3RhcnRjb20ub3JnL3BvbGljeS5wZGYwEQYJYIZIAYb4QgEBBAQD
+AgAHMDgGCWCGSAGG+EIBDQQrFilTdGFydENvbSBGcmVlIFNTTCBDZXJ0aWZpY2F0aW9uIEF1
+dGhvcml0eTANBgkqhkiG9w0BAQUFAAOCAgEAFmyZ9GYMNPXQhV59CuzaEE44HF7fpiUFS5Ey
+weg78T3dRAlbB0mKKctmArexmvclmAk8jhvh3TaHK0u7aNM5Zj2gJsfyOZEdUauCe37Vzlrk
+4gNXcGmXCPleWKYK34wGmkUWFjgKXlf2Ysd6AgXmvB618p70qSmD+LIU424oh0TDkBreOKk8
+rENNZEXO3SipXPJzewT4F+irsfMuXGRuczE6Eri8sxHkfY+BUZo7jYn0TZNmezwD7dOaHZrz
+ZVD1oNB1ny+v8OqCQ5j4aZyJecRDjkZy42Q2Eq/3JR44iZB3fsNrarnDy0RLrHiQi+fHLB5L
+EUTINFInzQpdn4XBidUaePKVEFMy3YCEZnXZtWgo+2EuvoSoOMCZEoalHmdkrQYuL6lwhceW
+D3yJZfWOQ1QOq92lgDmUYMA0yZZwLKMS9R9Ie70cfmu3nZD0Ijuu+PwqyvqCUqDvr0tVk+vB
+tfAii6w0TiYiBKGHLHVKt+V9E9e4DGTANtLJL4YSjCMJwRuCO3NJo2pXh5Tl1njFmUNj403g
+dy3hZZlyaQQaRwnmDwFWJPsfvw55qVguucQJAX6Vum0ABj6y6koQOdjQK/W/7HW/lwLFCRsI
+3FU34oH7N4RDYiDK51ZLZer+bMEkkyShNOsF/5oirpt9P/FlUQqmMGqz9IgcgA38corog14=</X509Certificate>
+    </X509Data>
+   </KeyInfo>
+  </signature>
+  <file id="10">
+   <ctime>2011-03-27T13:14:34Z</ctime>
+   <mtime>2011-03-27T13:14:34Z</mtime>
+   <atime>2011-03-27T13:14:32Z</atime>
+   <group>wheel</group>
+   <gid>0</gid>
+   <user>mkrautz</user>
+   <uid>501</uid>
+   <mode>0755</mode>
+   <deviceno>234881026</deviceno>
+   <inode>19865869</inode>
+   <type>directory</type>
+   <name>libmumbleoverlay.pkg</name>
+   <file id="11">
+    <data>
+     <length>246</length>
+     <offset>101582</offset>
+     <size>360</size>
+     <encoding style="application/x-gzip"/>
+     <archived-checksum style="SHA1">68ac2b6b0698aaff8adddc575adce31874336648</archived-checksum>
+     <extracted-checksum style="SHA1">d17c99b12179756f1263c4845029525c9ec20ef3</extracted-checksum>
+    </data>
+    <FinderCreateTime>
+     <nanoseconds>0</nanoseconds>
+     <time>2011-03-27T13:14:34</time>
+    </FinderCreateTime>
+    <ctime>2011-03-27T13:14:34Z</ctime>
+    <mtime>2011-03-27T13:14:34Z</mtime>
+    <atime>2011-03-27T13:14:34Z</atime>
+    <group>wheel</group>
+    <gid>0</gid>
+    <user>mkrautz</user>
+    <uid>501</uid>
+    <mode>0644</mode>
+    <deviceno>234881026</deviceno>
+    <inode>19865891</inode>
+    <type>file</type>
+    <name>PackageInfo</name>
+   </file>
+   <file id="12">
+    <data>
+     <length>501</length>
+     <offset>101828</offset>
+     <size>35245</size>
+     <encoding style="application/x-gzip"/>
+     <archived-checksum style="SHA1">4a9599b043a1dbfd9da8293eec51f809f802dc3c</archived-checksum>
+     <extracted-checksum style="SHA1">4a45093434703692f78a8131ae5f71e0ce9a0005</extracted-checksum>
+    </data>
+    <FinderCreateTime>
+     <nanoseconds>0</nanoseconds>
+     <time>2011-03-27T13:14:32</time>
+    </FinderCreateTime>
+    <ctime>2011-03-27T13:14:33Z</ctime>
+    <mtime>2011-03-27T13:14:32Z</mtime>
+    <atime>2011-03-27T13:14:33Z</atime>
+    <group>wheel</group>
+    <gid>0</gid>
+    <user>mkrautz</user>
+    <uid>501</uid>
+    <mode>0644</mode>
+    <deviceno>234881026</deviceno>
+    <inode>19865889</inode>
+    <type>file</type>
+    <name>Bom</name>
+   </file>
+   <file id="13">
+    <data>
+     <length>48313</length>
+     <encoding style="application/octet-stream"/>
+     <offset>102329</offset>
+     <size>48313</size>
+     <archived-checksum style="SHA1">07f606b6268a15e13ba8234ae2affaca2924cd45</archived-checksum>
+     <extracted-checksum style="SHA1">07f606b6268a15e13ba8234ae2affaca2924cd45</extracted-checksum>
+    </data>
+    <FinderCreateTime>
+     <nanoseconds>0</nanoseconds>
+     <time>2011-03-27T13:14:33</time>
+    </FinderCreateTime>
+    <ctime>2011-03-27T13:14:33Z</ctime>
+    <mtime>2011-03-27T13:14:33Z</mtime>
+    <atime>2011-03-27T13:14:33Z</atime>
+    <group>wheel</group>
+    <gid>0</gid>
+    <user>mkrautz</user>
+    <uid>501</uid>
+    <mode>0644</mode>
+    <deviceno>234881026</deviceno>
+    <inode>19865890</inode>
+    <type>file</type>
+    <name>Payload</name>
+   </file>
+  </file>
+  <file id="5">
+   <ctime>2011-03-27T13:14:32Z</ctime>
+   <mtime>2011-03-27T13:14:32Z</mtime>
+   <atime>2011-03-27T13:14:30Z</atime>
+   <group>wheel</group>
+   <gid>0</gid>
+   <user>mkrautz</user>
+   <uid>501</uid>
+   <mode>0755</mode>
+   <deviceno>234881026</deviceno>
+   <inode>19865831</inode>
+   <type>directory</type>
+   <name>mumbleoverlay.pkg</name>
+   <file id="6">
+    <data>
+     <length>305</length>
+     <offset>91145</offset>
+     <size>673</size>
+     <encoding style="application/x-gzip"/>
+     <archived-checksum style="SHA1">10392611c71a63157f0a87f3858f466833e9e3bd</archived-checksum>
+     <extracted-checksum style="SHA1">d3d70ffa46eea6af639179c37c946fd38f45e612</extracted-checksum>
+    </data>
+    <FinderCreateTime>
+     <nanoseconds>0</nanoseconds>
+     <time>2011-03-27T13:14:32</time>
+    </FinderCreateTime>
+    <ctime>2011-03-27T13:14:32Z</ctime>
+    <mtime>2011-03-27T13:14:32Z</mtime>
+    <atime>2011-03-27T13:14:32Z</atime>
+    <group>wheel</group>
+    <gid>0</gid>
+    <user>mkrautz</user>
+    <uid>501</uid>
+    <mode>0644</mode>
+    <deviceno>234881026</deviceno>
+    <inode>19865867</inode>
+    <type>file</type>
+    <name>PackageInfo</name>
+   </file>
+   <file id="7">
+    <data>
+     <length>845</length>
+     <offset>91450</offset>
+     <size>35717</size>
+     <encoding style="application/x-gzip"/>
+     <archived-checksum style="SHA1">b0dd9eb3f6172d7f528c80edc3dd5e94c35d44d1</archived-checksum>
+     <extracted-checksum style="SHA1">6a5b1f5d9eadcfff298604a3126299d936296467</extracted-checksum>
+    </data>
+    <FinderCreateTime>
+     <nanoseconds>0</nanoseconds>
+     <time>2011-03-27T13:14:30</time>
+    </FinderCreateTime>
+    <ctime>2011-03-27T13:14:30Z</ctime>
+    <mtime>2011-03-27T13:14:30Z</mtime>
+    <atime>2011-03-27T13:14:30Z</atime>
+    <group>wheel</group>
+    <gid>0</gid>
+    <user>mkrautz</user>
+    <uid>501</uid>
+    <mode>0644</mode>
+    <deviceno>234881026</deviceno>
+    <inode>19865864</inode>
+    <type>file</type>
+    <name>Bom</name>
+   </file>
+   <file id="8">
+    <data>
+     <length>9083</length>
+     <encoding style="application/octet-stream"/>
+     <offset>92295</offset>
+     <size>9083</size>
+     <archived-checksum style="SHA1">bf6e79c2797b2c6d2af5354c4f78fdb281299baf</archived-checksum>
+     <extracted-checksum style="SHA1">bf6e79c2797b2c6d2af5354c4f78fdb281299baf</extracted-checksum>
+    </data>
+    <FinderCreateTime>
+     <nanoseconds>0</nanoseconds>
+     <time>2011-03-27T13:14:30</time>
+    </FinderCreateTime>
+    <ctime>2011-03-27T13:14:30Z</ctime>
+    <mtime>2011-03-27T13:14:30Z</mtime>
+    <atime>2011-03-27T13:14:30Z</atime>
+    <group>wheel</group>
+    <gid>0</gid>
+    <user>mkrautz</user>
+    <uid>501</uid>
+    <mode>0644</mode>
+    <deviceno>234881026</deviceno>
+    <inode>19865865</inode>
+    <type>file</type>
+    <name>Payload</name>
+   </file>
+   <file id="9">
+    <data>
+     <length>204</length>
+     <encoding style="application/octet-stream"/>
+     <offset>101378</offset>
+     <size>204</size>
+     <archived-checksum style="SHA1">24a7bb3af1158d9874df2376dd5f07a79bd7d514</archived-checksum>
+     <extracted-checksum style="SHA1">24a7bb3af1158d9874df2376dd5f07a79bd7d514</extracted-checksum>
+    </data>
+    <FinderCreateTime>
+     <nanoseconds>0</nanoseconds>
+     <time>2011-03-27T13:14:30</time>
+    </FinderCreateTime>
+    <ctime>2011-03-27T13:14:30Z</ctime>
+    <mtime>2011-03-27T13:14:30Z</mtime>
+    <atime>2011-03-27T13:14:30Z</atime>
+    <group>wheel</group>
+    <gid>0</gid>
+    <user>mkrautz</user>
+    <uid>501</uid>
+    <mode>0644</mode>
+    <deviceno>234881026</deviceno>
+    <inode>19865828</inode>
+    <type>file</type>
+    <name>Scripts</name>
+   </file>
+  </file>
+  <file id="2">
+   <FinderCreateTime>
+    <nanoseconds>0</nanoseconds>
+    <time>2011-03-27T13:14:34</time>
+   </FinderCreateTime>
+   <ctime>2011-03-27T13:14:34Z</ctime>
+   <mtime>2011-03-27T13:14:34Z</mtime>
+   <atime>2011-03-27T13:14:34Z</atime>
+   <group>wheel</group>
+   <gid>0</gid>
+   <user>mkrautz</user>
+   <uid>501</uid>
+   <mode>0755</mode>
+   <deviceno>234881026</deviceno>
+   <inode>19865893</inode>
+   <type>directory</type>
+   <name>Resources</name>
+   <file id="3">
+    <FinderCreateTime>
+     <nanoseconds>0</nanoseconds>
+     <time>2011-03-27T13:14:34</time>
+    </FinderCreateTime>
+    <ctime>2011-03-27T13:14:34Z</ctime>
+    <mtime>2011-03-27T13:14:34Z</mtime>
+    <atime>2011-03-27T13:14:34Z</atime>
+    <group>wheel</group>
+    <gid>0</gid>
+    <user>mkrautz</user>
+    <uid>501</uid>
+    <mode>0755</mode>
+    <deviceno>234881026</deviceno>
+    <inode>19865894</inode>
+    <type>directory</type>
+    <name>en.lproj</name>
+    <file id="4">
+     <data>
+      <length>90421</length>
+      <offset>724</offset>
+      <size>92384</size>
+      <encoding style="application/x-gzip"/>
+      <archived-checksum style="SHA1">44e6581d9fe41cc43bd92cbe63c82f4bfeafae20</archived-checksum>
+      <extracted-checksum style="SHA1">d87246d4c4515abe818f36145f281bcaacd6e370</extracted-checksum>
+     </data>
+     <FinderCreateTime>
+      <nanoseconds>0</nanoseconds>
+      <time>2011-02-20T12:51:25</time>
+     </FinderCreateTime>
+     <ctime>2011-03-27T13:14:34Z</ctime>
+     <mtime>2011-02-20T12:51:25Z</mtime>
+     <atime>2011-03-27T12:33:04Z</atime>
+     <group>wheel</group>
+     <gid>0</gid>
+     <user>mkrautz</user>
+     <uid>501</uid>
+     <mode>0644</mode>
+     <deviceno>234881026</deviceno>
+     <inode>19865895</inode>
+     <type>file</type>
+     <name>background</name>
+    </file>
+   </file>
+  </file>
+  <file id="1">
+   <data>
+    <length>448</length>
+    <offset>276</offset>
+    <size>1382</size>
+    <encoding style="application/x-gzip"/>
+    <archived-checksum style="SHA1">e102e845fbe7b0e096b73eede7ce860192c4296a</archived-checksum>
+    <extracted-checksum style="SHA1">052765c8cfd9b64179a288da9dff20f0e3c75eba</extracted-checksum>
+   </data>
+   <FinderCreateTime>
+    <nanoseconds>0</nanoseconds>
+    <time>2011-03-27T13:14:35</time>
+   </FinderCreateTime>
+   <ctime>2011-03-27T13:14:35Z</ctime>
+   <mtime>2011-03-27T13:14:35Z</mtime>
+   <atime>2011-03-27T13:14:35Z</atime>
+   <group>wheel</group>
+   <gid>0</gid>
+   <user>mkrautz</user>
+   <uid>501</uid>
+   <mode>0644</mode>
+   <deviceno>234881026</deviceno>
+   <inode>19865896</inode>
+   <type>file</type>
+   <name>Distribution</name>
+  </file>
+ </toc>
+</xar>
