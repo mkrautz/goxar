@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"compress/zlib"
 	"crypto"
+	"crypto/tls"
 	"crypto/md5"
 	"crypto/rsa"
 	"crypto/sha1"
@@ -42,18 +43,52 @@ const (
 	xarChecksumKindMD5
 )
 
+type Config struct {
+	// The set of CA certificates that are considered trusted.
+	RootCAs *tls.CASet
+
+	// For xar.Readers, setting this to true will make the reader
+	// validate the signature (if any) and verify that the certificate
+	// chain found in the archive is trusted by the system.
+	//
+	// If set to true, the package will ignore invalid signatures and/or
+	// untrusted certificates in the certificate chain.
+	//
+	// Note: Since there is no way in Go to easily get a list of system
+	// CAs in a cross-platform way, the certificates in RootCAs are considered
+	// the 'trusted root certificates' of the system.
+	VerifySignature bool
+}
+
 type File struct {
 }
 
 type Reader struct {
 	File []*File
+
+	HasSignature    bool
+	Certificates    []*x509.Certificate
+	ValidSignature  bool
+
 	xar        *os.File
 	heapOffset int64
 }
 
+// Default configuration for Readers
+func defaultReaderConfig() *Config {
+	return &Config{
+		RootCAs: nil,
+		VerifySignature: true,
+	}
+}
+
 // Create a new XAR reader
-func NewReader(name string) (r *Reader, err os.Error) {
+func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 	r = &Reader{}
+
+	if config == nil {
+		config = defaultReaderConfig()
+	}
 
 	r.xar, err = os.Open(name, os.O_RDONLY, 0400)
 	if err != nil {
@@ -146,7 +181,8 @@ func NewReader(name string) (r *Reader, err os.Error) {
 	}
 
 	// Check if there's a signature ...
-	if root.Toc.Signature != nil {
+	r.HasSignature = root.Toc.Signature != nil
+	if config.VerifySignature == true && root.Toc.Signature != nil {
 		if len(root.Toc.Signature.Certificates) == 0 {
 			return nil, os.NewError("No certificates in XAR")
 		}
@@ -157,17 +193,29 @@ func NewReader(name string) (r *Reader, err os.Error) {
 			return nil, err
 		}
 
-		// Get the public key from the leaf certificate
-		leafb64 := []byte(strings.Replace(root.Toc.Signature.Certificates[0], "\n", "", -1))
-		leafder := make([]byte, base64.StdEncoding.DecodedLen(len(leafb64)))
-		ndec, err := base64.StdEncoding.Decode(leafder, leafb64)
-		if err != nil {
-			return nil, err
+		// Read certificates
+		for i := 0; i < len(root.Toc.Signature.Certificates); i++ {
+			cb64 := []byte(strings.Replace(root.Toc.Signature.Certificates[i], "\n", "", -1))
+			cder := make([]byte, base64.StdEncoding.DecodedLen(len(cb64)))
+			ndec, err := base64.StdEncoding.Decode(cder, cb64)
+			if err != nil {
+				return nil, err
+			}
+
+			cert, err := x509.ParseCertificate(cder[0:ndec])
+			if err != nil {
+				return nil, err
+			}
+
+			r.Certificates = append(r.Certificates, cert)
 		}
 
-		cert, err := x509.ParseCertificate(leafder[0:ndec])
-		if err != nil {
-			return nil, err
+		// Verify validity of chain
+		// fixme(mkrautz): Check CA certs against config.RootCAs
+		for i := 1; i < len(r.Certificates); i++ {
+			if err := r.Certificates[i-1].CheckSignatureFrom(r.Certificates[i]); err != nil {
+				return nil, err
+			}
 		}
 
 		var sighash crypto.Hash
@@ -180,7 +228,7 @@ func NewReader(name string) (r *Reader, err os.Error) {
 		}
 
 		if root.Toc.Signature.Style == "RSA" {
-			pubkey := cert.PublicKey.(*rsa.PublicKey)
+			pubkey := r.Certificates[0].PublicKey.(*rsa.PublicKey)
 			if pubkey == nil {
 				return nil, os.NewError("Signature style is RSA but certificate's public key is not.")
 			}
@@ -192,6 +240,7 @@ func NewReader(name string) (r *Reader, err os.Error) {
 			return nil, os.NewError(fmt.Sprint("Unknown signature style %s", root.Toc.Signature.Style))
 		}
 
+		r.ValidSignature = true
 	}
 
 	return r, nil
