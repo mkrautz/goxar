@@ -18,7 +18,7 @@ type xmlXar struct {
 
 type xmlChecksum struct {
 	XMLName xml.Name "checksum"
-	Style   string "attr"
+	Style   string   "attr"
 	Offset  int64
 	Size    int64
 }
@@ -32,12 +32,12 @@ type xmlSignature struct {
 }
 
 type xmlToc struct {
-	XMLName      xml.Name "toc"
-	CreationTime string
-	Checksum     *xmlChecksum
+	XMLName               xml.Name "toc"
+	CreationTime          string
+	Checksum              *xmlChecksum
 	SignatureCreationTime uint64
-	Signature    *xmlSignature
-	File         []xmlFile
+	Signature             *xmlSignature
+	File                  []xmlFile
 }
 
 type xmlFileChecksum struct {

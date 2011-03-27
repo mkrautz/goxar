@@ -60,15 +60,14 @@ type Config struct {
 	VerifySignature bool
 }
 
-type File struct {
-}
+type File struct{}
 
 type Reader struct {
 	File []*File
 
-	HasSignature    bool
-	Certificates    []*x509.Certificate
-	ValidSignature  bool
+	HasSignature   bool
+	Certificates   []*x509.Certificate
+	ValidSignature bool
 
 	xar        *os.File
 	heapOffset int64
@@ -77,7 +76,7 @@ type Reader struct {
 // Default configuration for Readers
 func defaultReaderConfig() *Config {
 	return &Config{
-		RootCAs: nil,
+		RootCAs:         nil,
 		VerifySignature: true,
 	}
 }
@@ -150,7 +149,7 @@ func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 
 	// Check whether the XAR checksum matches
 	storedsum := make([]byte, root.Toc.Checksum.Size)
-	_, err = io.ReadFull(io.NewSectionReader(r.xar, r.heapOffset + root.Toc.Checksum.Offset, root.Toc.Checksum.Size), storedsum)
+	_, err = io.ReadFull(io.NewSectionReader(r.xar, r.heapOffset+root.Toc.Checksum.Offset, root.Toc.Checksum.Size), storedsum)
 	if err != nil {
 		return nil, err
 	}
@@ -188,7 +187,7 @@ func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 		}
 
 		signature := make([]byte, root.Toc.Signature.Size)
-		_, err = io.ReadFull(io.NewSectionReader(r.xar, r.heapOffset + root.Toc.Signature.Offset, root.Toc.Signature.Size), signature)
+		_, err = io.ReadFull(io.NewSectionReader(r.xar, r.heapOffset+root.Toc.Signature.Offset, root.Toc.Signature.Size), signature)
 		if err != nil {
 			return nil, err
 		}
