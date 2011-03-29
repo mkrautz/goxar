@@ -107,7 +107,7 @@ type Reader struct {
 
 	Certificates          []*x509.Certificate
 	SignatureCreationTime uint64
-	ValidSignature        bool
+	SignatureError        os.Error
 
 	xar        io.ReaderAt
 	size       int64
@@ -126,7 +126,7 @@ func OpenReader(name string) (r *Reader, err os.Error) {
 		return nil, err
 	}
 
-	return NewReader(f, info.Size) 
+	return NewReader(f, info.Size)
 }
 
 // NewReader returns a new reader reading from r, which is assumed to have the given size in bytes.
@@ -221,67 +221,9 @@ func NewReader(r io.ReaderAt, size int64) (*Reader, os.Error) {
 		return nil, os.NewError("TOC checksum mismatch")
 	}
 
-	// Check if there's a signature ...
-	xr.SignatureCreationTime = root.Toc.SignatureCreationTime
-	if root.Toc.Signature != nil {
-		if len(root.Toc.Signature.Certificates) == 0 {
-			return nil, os.NewError("No certificates in XAR")
-		}
-
-		signature := make([]byte, root.Toc.Signature.Size)
-		_, err = io.ReadFull(io.NewSectionReader(xr.xar, xr.heapOffset+root.Toc.Signature.Offset, root.Toc.Signature.Size), signature)
-		if err != nil {
-			return nil, err
-		}
-
-		// Read certificates
-		for i := 0; i < len(root.Toc.Signature.Certificates); i++ {
-			cb64 := []byte(strings.Replace(root.Toc.Signature.Certificates[i], "\n", "", -1))
-			cder := make([]byte, base64.StdEncoding.DecodedLen(len(cb64)))
-			ndec, err := base64.StdEncoding.Decode(cder, cb64)
-			if err != nil {
-				return nil, err
-			}
-
-			cert, err := x509.ParseCertificate(cder[0:ndec])
-			if err != nil {
-				return nil, err
-			}
-
-			xr.Certificates = append(xr.Certificates, cert)
-		}
-
-		// Verify validity of chain
-		for i := 1; i < len(xr.Certificates); i++ {
-			if err := xr.Certificates[i-1].CheckSignatureFrom(xr.Certificates[i]); err != nil {
-				return nil, err
-			}
-		}
-
-		var sighash crypto.Hash
-		if xh.checksum_kind == xarChecksumKindNone {
-			return nil, os.NewError("Cannot use xarChecksumKindNone with signature")
-		} else if xh.checksum_kind == xarChecksumKindSHA1 {
-			sighash = crypto.SHA1
-		} else if xh.checksum_kind == xarChecksumKindMD5 {
-			sighash = crypto.MD5
-		}
-
-		if root.Toc.Signature.Style == "RSA" {
-			pubkey := xr.Certificates[0].PublicKey.(*rsa.PublicKey)
-			if pubkey == nil {
-				return nil, os.NewError("Signature style is RSA but certificate's public key is not.")
-			}
-			err = rsa.VerifyPKCS1v15(pubkey, sighash, storedsum, signature)
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			return nil, os.NewError(fmt.Sprint("Unknown signature style %s", root.Toc.Signature.Style))
-		}
-
-		xr.ValidSignature = true
-	}
+	// Ignore error. The method automatically sets xr.SignatureError with
+	// the returned error.
+	_ = xr.readAndVerifySignature(root, xh.checksum_kind, calcedsum)
 
 	// Add files to Reader
 	for _, xmlFile := range root.Toc.File {
@@ -292,6 +234,111 @@ func NewReader(r io.ReaderAt, size int64) (*Reader, os.Error) {
 	}
 
 	return xr, nil
+}
+
+// Reads signature information from the xmlXar element into
+// the Reader. Also attempts to verify any signatures found.
+func (r *Reader) readAndVerifySignature(root *xmlXar, checksumKind uint32, checksum []byte) (err os.Error) {
+	defer func() {
+		r.SignatureError = err
+	}()
+
+	// Check if there's a signature ...
+	r.SignatureCreationTime = root.Toc.SignatureCreationTime
+	if root.Toc.Signature != nil {
+		if len(root.Toc.Signature.Certificates) == 0 {
+			return os.NewError("No certificates in XAR")
+		}
+
+		signature := make([]byte, root.Toc.Signature.Size)
+		_, err = r.xar.ReadAt(signature, r.heapOffset+root.Toc.Signature.Offset)
+		if err != nil {
+			return err
+		}
+
+		// Read certificates
+		for i := 0; i < len(root.Toc.Signature.Certificates); i++ {
+			cb64 := []byte(strings.Replace(root.Toc.Signature.Certificates[i], "\n", "", -1))
+			cder := make([]byte, base64.StdEncoding.DecodedLen(len(cb64)))
+			ndec, err := base64.StdEncoding.Decode(cder, cb64)
+			if err != nil {
+				return err
+			}
+
+			cert, err := x509.ParseCertificate(cder[0:ndec])
+			if err != nil {
+				return err
+			}
+
+			r.Certificates = append(r.Certificates, cert)
+		}
+
+		// Verify validity of chain
+		for i := 1; i < len(r.Certificates); i++ {
+			if err := r.Certificates[i-1].CheckSignatureFrom(r.Certificates[i]); err != nil {
+				return err
+			}
+		}
+
+		var sighash crypto.Hash
+		switch checksumKind {
+		case xarChecksumKindNone:
+			return os.NewError("Cannot use xarChecksumKindNone with signature")
+		case xarChecksumKindSHA1:
+			sighash = crypto.SHA1
+		case xarChecksumKindMD5:
+			sighash = crypto.MD5
+		}
+
+		if root.Toc.Signature.Style == "RSA" {
+			pubkey := r.Certificates[0].PublicKey.(*rsa.PublicKey)
+			if pubkey == nil {
+				return os.NewError("Signature style is RSA but certificate's public key is not.")
+			}
+			err = rsa.VerifyPKCS1v15(pubkey, sighash, checksum, signature)
+			if err != nil {
+				return err
+			}
+		} else {
+			return os.NewError(fmt.Sprint("Unknown signature style %s", root.Toc.Signature.Style))
+		}
+	}
+
+	return nil
+}
+
+// This is a convenience method that returns true if the opened XAR archive
+// has a signature. Internally, it checks whether the SignatureCreationTime
+// field of the Reader is > 0.
+func (r *Reader) HasSignature() bool {
+	return r.SignatureCreationTime > 0
+}
+
+// This is a convenience method that returns true of the signature if the
+// opened XAR archive was successfully verified.
+//
+// For a signature to be valid, it must have been signed by the leaf certificate
+// in the certificate chain of the archive.
+//
+// If there is more than one certificate in the chain, each certificate must come
+// before the one that has issued it. This is verified by checking whether the
+// signature of each certificate can be verified against the public key of the
+// certificate following it.
+//
+// The Reader does not do anything to check whether the leaf certificate and/or
+// any intermediate certificates are trusted. It is up to users of this package
+// to determine whether they wish to trust a given certificate chain.
+// If an archive has a signature, the certificate chain of the archive can be
+// accessed through the Certificates field of the Reader.
+//
+// Internally, this method checks whether the SignatureError field is non-nil,
+// and whether the SignatureCreationTime is > 0.
+//
+// If the signature is not valid, and the XAR file has a signature, the
+// SignatureError field of the Reader can be used to determine a possible
+// cause.
+func (r *Reader) ValidSignature() bool {
+	return r.SignatureCreationTime > 0 && r.SignatureError == nil
 }
 
 func xmlFileToFileInfo(xmlFile *xmlFile) (fi FileInfo, err os.Error) {

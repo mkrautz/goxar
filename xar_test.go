@@ -15,6 +15,14 @@ func TestOpenFile(t *testing.T) {
 		t.Errorf(err.String())
 	}
 
+	if r.HasSignature() {
+		fmt.Printf("XAR archive has a signature. ValidSignature=%v\n", r.ValidSignature())
+		fmt.Printf("Certificates = %v\n", r.Certificates)
+		fmt.Printf("\n")
+	} else {
+		fmt.Printf("XAR archive does not have a signature.\n")
+	}
+
 	// dump all files in the xar archive
 	for _, xf := range r.File {
 		fmt.Printf("name:            %v\n", xf.Name)
