@@ -7,6 +7,7 @@ package xar
 
 import (
 	"bytes"
+	"compress/gzip"
 	"compress/zlib"
 	"crypto"
 	"crypto/tls"
@@ -16,11 +17,16 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/binary"
+	"encoding/hex"
 	"fmt"
 	"hash"
 	"io"
+	"io/ioutil"
 	"os"
+	"path"
+	"strconv"
 	"strings"
+	"time"
 	"xml"
 )
 
@@ -60,16 +66,70 @@ type Config struct {
 	VerifySignature bool
 }
 
-type File struct{}
+
+type FileType int
+
+const (
+	FileTypeFile FileType = iota
+	FileTypeDirectory
+	FileTypeSymlink
+	FileTypeFifo
+	FileTypeCharDevice
+	FileTypeBlockDevice
+	FileTypeSocket
+)
+
+type FileChecksumKind int
+
+const (
+	FileChecksumKindSHA1 FileChecksumKind = iota
+	FileChecksumKindMD5
+)
+
+type FileInfo struct {
+	DeviceNo uint64
+	Mode     uint32
+	Inode    uint64
+	Uid      int
+	User     string
+	Gid      int
+	Group    string
+	Atime    int64
+	Mtime    int64
+	Ctime    int64
+}
+
+type FileChecksum struct {
+	Kind FileChecksumKind
+	Sum  []byte
+}
+
+type File struct {
+	Type FileType
+	Info FileInfo
+	Id   uint64
+	Name string
+
+	EncodingMimetype   string
+	CompressedChecksum FileChecksum
+	ExtractedChecksum  FileChecksum
+	// The size of the archived file (the size of the file after decompressing)
+	Size int64
+
+	offset int64
+	length int64
+	heap   io.ReaderAt
+}
 
 type Reader struct {
-	File []*File
+	File map[uint64]*File
 
 	HasSignature   bool
 	Certificates   []*x509.Certificate
 	ValidSignature bool
 
-	xar        *os.File
+	xar        io.ReaderAt
+	info       *os.FileInfo
 	heapOffset int64
 }
 
@@ -84,18 +144,24 @@ func defaultReaderConfig() *Config {
 // Create a new XAR reader
 func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 	r = &Reader{}
+	r.File = make(map[uint64]*File)
 
 	if config == nil {
 		config = defaultReaderConfig()
 	}
 
-	r.xar, err = os.Open(name, os.O_RDONLY, 0400)
+	f, err := os.Open(name, os.O_RDONLY, 0400)
 	if err != nil {
 		return nil, err
 	}
+	r.info, err = f.Stat()
+	if err != nil {
+		return nil, err
+	}
+	r.xar = f
 
 	hdr := make([]byte, xarHeaderSize)
-	_, err = r.xar.Read(hdr)
+	_, err = r.xar.ReadAt(hdr, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -123,8 +189,7 @@ func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 	}
 
 	ztoc := make([]byte, xh.toc_len_zlib)
-	ztocr := io.LimitReader(r.xar, int64(len(ztoc)))
-	_, err = io.ReadFull(ztocr, ztoc)
+	_, err = r.xar.ReadAt(ztoc, xarHeaderSize)
 	if err != nil {
 		return nil, err
 	}
@@ -242,5 +307,170 @@ func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 		r.ValidSignature = true
 	}
 
+	// Add files to Reader
+	for _, xmlFile := range root.Toc.File {
+		err := r.readXmlFileTree(xmlFile, "")
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return r, nil
+}
+
+func xmlFileToFileInfo(xmlFile *xmlFile) (fi FileInfo, err os.Error) {
+	t, err := time.Parse(time.RFC3339, xmlFile.Ctime)
+	if err != nil {
+		return
+	}
+	fi.Ctime = t.Seconds()
+
+	t, err = time.Parse(time.RFC3339, xmlFile.Mtime)
+	if err != nil {
+		return
+	}
+	fi.Mtime = t.Seconds()
+
+	t, err = time.Parse(time.RFC3339, xmlFile.Atime)
+	if err != nil {
+		return
+	}
+	fi.Atime = t.Seconds()
+
+	fi.Group = xmlFile.Group
+	fi.Gid = xmlFile.Gid
+
+	fi.User = xmlFile.User
+	fi.Uid = xmlFile.Uid
+
+	fi.Mode = xmlFile.Mode
+
+	fi.Inode = xmlFile.Inode
+	fi.DeviceNo = xmlFile.DeviceNo
+
+	return
+}
+
+func fileChecksumFromXml(f *FileChecksum, x *xmlFileChecksum) (err os.Error) {
+	f.Sum, err = hex.DecodeString(x.Digest)
+	if err != nil {
+		return
+	}
+
+	switch x.Style {
+	case "MD5":
+		f.Kind = FileChecksumKindMD5
+	case "SHA1":
+		f.Kind = FileChecksumKindSHA1
+	default:
+		return os.NewError("Unknown file checksum kind")
+	}
+
+	return nil
+}
+
+// Create a new SectionReader that is limited to reading from the file's heap
+func (r *Reader) newHeapReader() *io.SectionReader {
+	return io.NewSectionReader(r.xar, r.heapOffset, r.info.Size-r.heapOffset)
+}
+
+// Reads the file tree from a parse XAR TOC into the Reader.
+func (r *Reader) readXmlFileTree(xmlFile *xmlFile, dir string) (err os.Error) {
+	xf := &File{}
+	xf.heap = r.newHeapReader()
+
+	if xmlFile.Type == "file" {
+		xf.Type = FileTypeFile
+	} else if xmlFile.Type == "directory" {
+		xf.Type = FileTypeDirectory
+	} else {
+		return
+	}
+
+	xf.Id, err = strconv.Atoui64(xmlFile.Id)
+	if err != nil {
+		return
+	}
+
+	xf.Name = path.Join(dir, xmlFile.Name)
+
+	xf.Info, err = xmlFileToFileInfo(xmlFile)
+	if err != nil {
+		return
+	}
+
+	if xf.Type == FileTypeFile && xmlFile.Data == nil {
+		err = os.NewError("Encountered file with no data")
+		return
+	}
+	if xf.Type == FileTypeFile {
+		xf.EncodingMimetype = xmlFile.Data.Encoding.Style
+		xf.Size = xmlFile.Data.Size
+		xf.length = xmlFile.Data.Length
+		xf.offset = xmlFile.Data.Offset
+		err = fileChecksumFromXml(&xf.CompressedChecksum, &xmlFile.Data.ArchivedChecksum)
+		if err != nil {
+			return
+		}
+		err = fileChecksumFromXml(&xf.ExtractedChecksum, &xmlFile.Data.ExtractedChecksum)
+		if err != nil {
+			return
+		}
+	}
+
+	r.File[xf.Id] = xf
+
+	if xf.Type == FileTypeDirectory {
+		for _, subXmlFile := range xmlFile.File {
+			err = r.readXmlFileTree(subXmlFile, xf.Name)
+			if err != nil {
+				return
+			}
+		}
+	}
+
+	return
+}
+
+// Open returns a ReadCloser that provides access to the file's
+// uncompressed content.
+func (f *File) Open() (rc io.ReadCloser, err os.Error) {
+	r := io.NewSectionReader(f.heap, f.offset, f.length)
+	switch f.EncodingMimetype {
+	case "application/octet-stream":
+		rc = ioutil.NopCloser(r)
+	case "application/x-gzip":
+		rc, err = gzip.NewReader(r)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return rc, nil
+}
+
+// Verif that the compressed content of the File in the
+// archive matches the stored checksum.
+func (f *File) VerifyChecksum() bool {
+	// Non-files are implicitly OK, since all metadata
+	// is stored in the TOC.
+	if f.Type != FileTypeFile {
+		return true
+	}
+
+	var hasher hash.Hash
+	switch f.CompressedChecksum.Kind {
+	case FileChecksumKindSHA1:
+		hasher = sha1.New()
+	case FileChecksumKindMD5:
+		hasher = md5.New()
+	default:
+		// fixme(mkrautz): Shouldn't be possilble, we ought to catch checksums
+		// we don't understand early on.
+		return false
+	}
+
+	io.Copy(hasher, io.NewSectionReader(f.heap, f.offset, f.length))
+	sum := hasher.Sum()
+	return bytes.Equal(sum, f.CompressedChecksum.Sum)
 }

@@ -37,13 +37,13 @@ type xmlToc struct {
 	Checksum              *xmlChecksum
 	SignatureCreationTime uint64
 	Signature             *xmlSignature
-	File                  []xmlFile
+	File                  []*xmlFile
 }
 
 type xmlFileChecksum struct {
 	XMLName xml.Name
 	Style   string "attr"
-	Digest  []byte "chardata"
+	Digest  string "chardata"
 }
 
 type xmlFinderCreateTime struct {
@@ -52,12 +52,17 @@ type xmlFinderCreateTime struct {
 	Time        string
 }
 
+type xmlFileEncoding struct {
+	XMLName xml.Name "encoding"
+	Style   string   "attr"
+}
+
 type xmlFileData struct {
 	XMLName           xml.Name "data"
 	Length            int64
 	Offset            int64
 	Size              int64
-	EncodingStyle     string "encoding>style"
+	Encoding          xmlFileEncoding
 	ArchivedChecksum  xmlFileChecksum
 	ExtractedChecksum xmlFileChecksum
 }
@@ -72,11 +77,12 @@ type xmlFile struct {
 	Gid              int
 	User             string
 	Uid              int
-	Mode             int
+	Mode             uint32
 	DeviceNo         uint64
 	Inode            uint64
 	Type             string
 	Name             string
 	FinderCreateTime *xmlFinderCreateTime
 	Data             *xmlFileData
+	File             []*xmlFile
 }

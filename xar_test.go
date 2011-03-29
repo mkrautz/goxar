@@ -5,6 +5,7 @@
 package xar
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -14,5 +15,12 @@ func TestOpenFile(t *testing.T) {
 		t.Errorf(err.String())
 	}
 
-	_ = r
+	// dump all files in the xar archive
+	for _, xf := range r.File {
+		fmt.Printf("name:            %v\n", xf.Name)
+		fmt.Printf("type:            %v\n", xf.Type)
+		fmt.Printf("info:            %v\n", xf.Info)
+		fmt.Printf("valid checksum:  %v\n", xf.VerifyChecksum())
+		fmt.Printf("\n")
+	}
 }
