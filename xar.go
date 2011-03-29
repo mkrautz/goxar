@@ -129,7 +129,7 @@ type Reader struct {
 	ValidSignature bool
 
 	xar        io.ReaderAt
-	info       *os.FileInfo
+	size       int64
 	heapOffset int64
 }
 
@@ -141,27 +141,35 @@ func defaultReaderConfig() *Config {
 	}
 }
 
-// Create a new XAR reader
-func NewReader(name string, config *Config) (r *Reader, err os.Error) {
-	r = &Reader{}
-	r.File = make(map[uint64]*File)
+// OpenReader will open the XAR file specified by name and return a Reader.
+func OpenReader(name string, config *Config) (r *Reader, err os.Error) {
+	f, err := os.Open(name, os.O_RDONLY, 0400)
+	if err != nil {
+		return nil, err
+	}
+
+	info, err := f.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	return NewReader(f, info.Size, config)
+}
+
+// NewReader returns a new reader reading from r, which is assumed to have the given size in bytes.
+func NewReader(r io.ReaderAt, size int64, config *Config) (*Reader, os.Error) {
+	xr := &Reader{
+		File: make(map[uint64]*File),
+		xar:  r,
+		size: size,
+	}
 
 	if config == nil {
 		config = defaultReaderConfig()
 	}
 
-	f, err := os.Open(name, os.O_RDONLY, 0400)
-	if err != nil {
-		return nil, err
-	}
-	r.info, err = f.Stat()
-	if err != nil {
-		return nil, err
-	}
-	r.xar = f
-
 	hdr := make([]byte, xarHeaderSize)
-	_, err = r.xar.ReadAt(hdr, 0)
+	_, err := xr.xar.ReadAt(hdr, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -189,7 +197,7 @@ func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 	}
 
 	ztoc := make([]byte, xh.toc_len_zlib)
-	_, err = r.xar.ReadAt(ztoc, xarHeaderSize)
+	_, err = xr.xar.ReadAt(ztoc, xarHeaderSize)
 	if err != nil {
 		return nil, err
 	}
@@ -206,7 +214,7 @@ func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 		return nil, err
 	}
 
-	r.heapOffset = xarHeaderSize + int64(xh.toc_len_zlib)
+	xr.heapOffset = xarHeaderSize + int64(xh.toc_len_zlib)
 
 	if root.Toc.Checksum == nil {
 		return nil, os.NewError("No TOC checksum info in TOC")
@@ -214,7 +222,7 @@ func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 
 	// Check whether the XAR checksum matches
 	storedsum := make([]byte, root.Toc.Checksum.Size)
-	_, err = io.ReadFull(io.NewSectionReader(r.xar, r.heapOffset+root.Toc.Checksum.Offset, root.Toc.Checksum.Size), storedsum)
+	_, err = io.ReadFull(io.NewSectionReader(xr.xar, xr.heapOffset+root.Toc.Checksum.Offset, root.Toc.Checksum.Size), storedsum)
 	if err != nil {
 		return nil, err
 	}
@@ -245,14 +253,14 @@ func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 	}
 
 	// Check if there's a signature ...
-	r.HasSignature = root.Toc.Signature != nil
+	xr.HasSignature = root.Toc.Signature != nil
 	if config.VerifySignature == true && root.Toc.Signature != nil {
 		if len(root.Toc.Signature.Certificates) == 0 {
 			return nil, os.NewError("No certificates in XAR")
 		}
 
 		signature := make([]byte, root.Toc.Signature.Size)
-		_, err = io.ReadFull(io.NewSectionReader(r.xar, r.heapOffset+root.Toc.Signature.Offset, root.Toc.Signature.Size), signature)
+		_, err = io.ReadFull(io.NewSectionReader(xr.xar, xr.heapOffset+root.Toc.Signature.Offset, root.Toc.Signature.Size), signature)
 		if err != nil {
 			return nil, err
 		}
@@ -271,13 +279,13 @@ func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 				return nil, err
 			}
 
-			r.Certificates = append(r.Certificates, cert)
+			xr.Certificates = append(xr.Certificates, cert)
 		}
 
 		// Verify validity of chain
 		// fixme(mkrautz): Check CA certs against config.RootCAs
-		for i := 1; i < len(r.Certificates); i++ {
-			if err := r.Certificates[i-1].CheckSignatureFrom(r.Certificates[i]); err != nil {
+		for i := 1; i < len(xr.Certificates); i++ {
+			if err := xr.Certificates[i-1].CheckSignatureFrom(xr.Certificates[i]); err != nil {
 				return nil, err
 			}
 		}
@@ -292,7 +300,7 @@ func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 		}
 
 		if root.Toc.Signature.Style == "RSA" {
-			pubkey := r.Certificates[0].PublicKey.(*rsa.PublicKey)
+			pubkey := xr.Certificates[0].PublicKey.(*rsa.PublicKey)
 			if pubkey == nil {
 				return nil, os.NewError("Signature style is RSA but certificate's public key is not.")
 			}
@@ -304,18 +312,18 @@ func NewReader(name string, config *Config) (r *Reader, err os.Error) {
 			return nil, os.NewError(fmt.Sprint("Unknown signature style %s", root.Toc.Signature.Style))
 		}
 
-		r.ValidSignature = true
+		xr.ValidSignature = true
 	}
 
 	// Add files to Reader
 	for _, xmlFile := range root.Toc.File {
-		err := r.readXmlFileTree(xmlFile, "")
+		err := xr.readXmlFileTree(xmlFile, "")
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return r, nil
+	return xr, nil
 }
 
 func xmlFileToFileInfo(xmlFile *xmlFile) (fi FileInfo, err os.Error) {
@@ -372,7 +380,7 @@ func fileChecksumFromXml(f *FileChecksum, x *xmlFileChecksum) (err os.Error) {
 
 // Create a new SectionReader that is limited to reading from the file's heap
 func (r *Reader) newHeapReader() *io.SectionReader {
-	return io.NewSectionReader(r.xar, r.heapOffset, r.info.Size-r.heapOffset)
+	return io.NewSectionReader(r.xar, r.heapOffset, r.size-r.heapOffset)
 }
 
 // Reads the file tree from a parse XAR TOC into the Reader.

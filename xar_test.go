@@ -10,7 +10,7 @@ import (
 )
 
 func TestOpenFile(t *testing.T) {
-	r, err := NewReader("payload.xar", nil)
+	r, err := OpenReader("payload.xar", nil)
 	if err != nil {
 		t.Errorf(err.String())
 	}
