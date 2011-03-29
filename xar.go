@@ -10,7 +10,6 @@ import (
 	"compress/gzip"
 	"compress/zlib"
 	"crypto"
-	"crypto/tls"
 	"crypto/md5"
 	"crypto/rsa"
 	"crypto/sha1"
@@ -48,24 +47,6 @@ const (
 	xarChecksumKindSHA1
 	xarChecksumKindMD5
 )
-
-type Config struct {
-	// The set of CA certificates that are considered trusted.
-	RootCAs *tls.CASet
-
-	// For xar.Readers, setting this to true will make the reader
-	// validate the signature (if any) and verify that the certificate
-	// chain found in the archive is trusted by the system.
-	//
-	// If set to true, the package will ignore invalid signatures and/or
-	// untrusted certificates in the certificate chain.
-	//
-	// Note: Since there is no way in Go to easily get a list of system
-	// CAs in a cross-platform way, the certificates in RootCAs are considered
-	// the 'trusted root certificates' of the system.
-	VerifySignature bool
-}
-
 
 type FileType int
 
@@ -124,25 +105,17 @@ type File struct {
 type Reader struct {
 	File map[uint64]*File
 
-	HasSignature   bool
-	Certificates   []*x509.Certificate
-	ValidSignature bool
+	Certificates          []*x509.Certificate
+	SignatureCreationTime uint64
+	ValidSignature        bool
 
 	xar        io.ReaderAt
 	size       int64
 	heapOffset int64
 }
 
-// Default configuration for Readers
-func defaultReaderConfig() *Config {
-	return &Config{
-		RootCAs:         nil,
-		VerifySignature: true,
-	}
-}
-
 // OpenReader will open the XAR file specified by name and return a Reader.
-func OpenReader(name string, config *Config) (r *Reader, err os.Error) {
+func OpenReader(name string) (r *Reader, err os.Error) {
 	f, err := os.Open(name, os.O_RDONLY, 0400)
 	if err != nil {
 		return nil, err
@@ -153,19 +126,15 @@ func OpenReader(name string, config *Config) (r *Reader, err os.Error) {
 		return nil, err
 	}
 
-	return NewReader(f, info.Size, config)
+	return NewReader(f, info.Size) 
 }
 
 // NewReader returns a new reader reading from r, which is assumed to have the given size in bytes.
-func NewReader(r io.ReaderAt, size int64, config *Config) (*Reader, os.Error) {
+func NewReader(r io.ReaderAt, size int64) (*Reader, os.Error) {
 	xr := &Reader{
 		File: make(map[uint64]*File),
 		xar:  r,
 		size: size,
-	}
-
-	if config == nil {
-		config = defaultReaderConfig()
 	}
 
 	hdr := make([]byte, xarHeaderSize)
@@ -253,8 +222,8 @@ func NewReader(r io.ReaderAt, size int64, config *Config) (*Reader, os.Error) {
 	}
 
 	// Check if there's a signature ...
-	xr.HasSignature = root.Toc.Signature != nil
-	if config.VerifySignature == true && root.Toc.Signature != nil {
+	xr.SignatureCreationTime = root.Toc.SignatureCreationTime
+	if root.Toc.Signature != nil {
 		if len(root.Toc.Signature.Certificates) == 0 {
 			return nil, os.NewError("No certificates in XAR")
 		}
@@ -283,7 +252,6 @@ func NewReader(r io.ReaderAt, size int64, config *Config) (*Reader, os.Error) {
 		}
 
 		// Verify validity of chain
-		// fixme(mkrautz): Check CA certs against config.RootCAs
 		for i := 1; i < len(xr.Certificates); i++ {
 			if err := xr.Certificates[i-1].CheckSignatureFrom(xr.Certificates[i]); err != nil {
 				return nil, err
