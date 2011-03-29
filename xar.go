@@ -351,6 +351,7 @@ func xmlFileToFileInfo(xmlFile *xmlFile) (fi FileInfo, err os.Error) {
 	return
 }
 
+// Convert a xmlFileChecksum to a FileChecksum.
 func fileChecksumFromXml(f *FileChecksum, x *xmlFileChecksum) (err os.Error) {
 	f.Sum, err = hex.DecodeString(x.Digest)
 	if err != nil {
@@ -408,10 +409,12 @@ func (r *Reader) readXmlFileTree(xmlFile *xmlFile, dir string) (err os.Error) {
 		xf.Size = xmlFile.Data.Size
 		xf.length = xmlFile.Data.Length
 		xf.offset = xmlFile.Data.Offset
+
 		err = fileChecksumFromXml(&xf.CompressedChecksum, &xmlFile.Data.ArchivedChecksum)
 		if err != nil {
 			return
 		}
+
 		err = fileChecksumFromXml(&xf.ExtractedChecksum, &xmlFile.Data.ExtractedChecksum)
 		if err != nil {
 			return
@@ -449,7 +452,7 @@ func (f *File) Open() (rc io.ReadCloser, err os.Error) {
 	return rc, nil
 }
 
-// Verif that the compressed content of the File in the
+// Verify that the compressed content of the File in the
 // archive matches the stored checksum.
 func (f *File) VerifyChecksum() bool {
 	// Non-files are implicitly OK, since all metadata
@@ -465,8 +468,6 @@ func (f *File) VerifyChecksum() bool {
 	case FileChecksumKindMD5:
 		hasher = md5.New()
 	default:
-		// fixme(mkrautz): Shouldn't be possilble, we ought to catch checksums
-		// we don't understand early on.
 		return false
 	}
 
