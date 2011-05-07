@@ -476,6 +476,14 @@ func (f *File) Open() (rc io.ReadCloser, err os.Error) {
 	return rc, err
 }
 
+// OpenRaw returns a ReadCloser that provides access to the file's
+// raw content. The encoding of the raw content is specified in
+// the File's EncodingMimetype field.
+func (f *File) OpenRaw() (rc io.ReadCloser, err os.Error) {
+	rc = ioutil.NopCloser(io.NewSectionReader(f.heap, f.offset, f.length))
+	return
+}
+
 // Verify that the compressed content of the File in the
 // archive matches the stored checksum.
 func (f *File) VerifyChecksum() bool {
