@@ -7,6 +7,7 @@ package xar
 
 import (
 	"bytes"
+	"compress/bzip2"
 	"compress/zlib"
 	"crypto"
 	"crypto/md5"
@@ -466,12 +467,13 @@ func (f *File) Open() (rc io.ReadCloser, err os.Error) {
 		rc = ioutil.NopCloser(r)
 	case "application/x-gzip":
 		rc, err = zlib.NewReader(r)
-		if err != nil {
-			return nil, err
-		}
+	case "application/x-bzip2":
+		rc = ioutil.NopCloser(bzip2.NewReader(r))
+	default:
+		err = os.NewError("Unknown file encoding")
 	}
 
-	return rc, nil
+	return rc, err
 }
 
 // Verify that the compressed content of the File in the
