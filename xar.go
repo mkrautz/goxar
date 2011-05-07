@@ -116,7 +116,7 @@ type Reader struct {
 
 // OpenReader will open the XAR file specified by name and return a Reader.
 func OpenReader(name string) (r *Reader, err os.Error) {
-	f, err := os.Open(name, os.O_RDONLY, 0400)
+	f, err := os.Open(name)
 	if err != nil {
 		return nil, err
 	}
