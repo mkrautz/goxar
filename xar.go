@@ -7,7 +7,6 @@ package xar
 
 import (
 	"bytes"
-	"compress/gzip"
 	"compress/zlib"
 	"crypto"
 	"crypto/md5"
@@ -466,7 +465,7 @@ func (f *File) Open() (rc io.ReadCloser, err os.Error) {
 	case "application/octet-stream":
 		rc = ioutil.NopCloser(r)
 	case "application/x-gzip":
-		rc, err = gzip.NewReader(r)
+		rc, err = zlib.NewReader(r)
 		if err != nil {
 			return nil, err
 		}
